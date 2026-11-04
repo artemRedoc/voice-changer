@@ -1,7 +1,7 @@
-"""Voice Changer: real-time voice effects that feed a virtual microphone.
+"""Voice Changer: real-time voice effects and AI voices that feed a virtual microphone.
 
 Run:  python app.py
-Route: microphone -> effects -> output device (the virtual cable's input).
+Route: microphone -> AI voice (optional) -> effects -> output device (the virtual cable).
 Other apps then pick the virtual cable's output as their microphone.
 """
 
@@ -11,17 +11,27 @@ import queue
 import sys
 import threading
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, filedialog
 
 import numpy as np
 import sounddevice as sd
 
-from dsp import VoiceEngine, Params, PRESETS, preset_params
+from dsp import VoiceEngine, Params, PRESETS, CATEGORIES, preset_params
+
+try:
+    import ai_voice
+    AI_AVAILABLE = True
+    AI_IMPORT_ERROR = ""
+except Exception as e:  # torch not installed, etc.
+    ai_voice = None
+    AI_AVAILABLE = False
+    AI_IMPORT_ERROR = str(e)
 
 APP_NAME = "Voice Changer"
 SETTINGS_PATH = os.path.join(os.path.expanduser("~"), ".voicechanger.json")
 BLOCK = 256
 RATE_CANDIDATES = (48000, 44100)
+LATENCY_CHOICES = ["0.25 s", "0.35 s", "0.5 s", "0.75 s", "1.0 s"]
 
 
 def fmt_pct(v):
@@ -32,25 +42,57 @@ def fmt_hz(v):
     return f"{v:.0f} Hz" if v < 1000 else f"{v / 1000:.1f} kHz"
 
 
+def fmt_st(v):
+    return f"{v:+.1f} st" if abs(v) < 1 and v != 0 else f"{v:+.0f} st"
+
+
+def fmt_x(v):
+    return f"{v:.2f} x"
+
+
 SLIDERS = [
-    # group, key, label, min, max, formatter
-    ("Pitch", "pitch", "Shift", -12, 12, lambda v: f"{v:+.0f} st"),
-    ("Robot", "ring_mix", "Amount", 0, 1, fmt_pct),
-    ("Robot", "ring_freq", "Tone", 10, 400, fmt_hz),
-    ("Echo", "echo_mix", "Amount", 0, 1, fmt_pct),
-    ("Echo", "echo_time", "Time", 0.05, 1.0, lambda v: f"{v * 1000:.0f} ms"),
-    ("Echo", "echo_fb", "Repeats", 0, 0.9, fmt_pct),
-    ("Space", "reverb_mix", "Amount", 0, 1, fmt_pct),
-    ("Space", "reverb_size", "Size", 0.5, 3.0, lambda v: f"{v:.1f} x"),
-    ("Tone", "low_cut", "Low cut", 20, 1500, fmt_hz),
-    ("Tone", "high_cut", "High cut", 1000, 20000, fmt_hz),
-    ("Grit", "drive", "Drive", 0, 1, fmt_pct),
-    ("Grit", "crush", "Crush", 0, 1, fmt_pct),
-    ("Wobble", "vib_depth", "Depth", 0, 1, fmt_pct),
-    ("Wobble", "vib_rate", "Speed", 0.5, 12, fmt_hz),
-    ("Output", "volume", "Volume", 0, 2, fmt_pct),
+    # page, group, key, label, min, max, formatter
+    ("Voice", "Pitch", "pitch", "Shift", -12, 12, lambda v: f"{v:+.0f} st"),
+    ("Voice", "Formant", "formant", "Size", 0.6, 1.6, fmt_x),
+    ("Voice", "Auto-tune", "tune", "Amount", 0, 1, fmt_pct),
+    ("Voice", "Auto-tune", "tune_speed", "Glide", 0, 1, fmt_pct),
+    ("Voice", "Harmony", "harm1", "Voice 1", -12, 12, fmt_st),
+    ("Voice", "Harmony", "harm2", "Voice 2", -12, 12, fmt_st),
+    ("Voice", "Harmony", "harm_mix", "Mix", 0, 1, fmt_pct),
+    ("Voice", "Breath", "whisper", "Whisper", 0, 1, fmt_pct),
+    ("Voice", "Breath", "noise", "Hiss", 0, 1, fmt_pct),
+    ("Voice", "Output", "volume", "Volume", 0, 2, fmt_pct),
+    ("Character", "Robot", "ring_mix", "Amount", 0, 1, fmt_pct),
+    ("Character", "Robot", "ring_freq", "Tone", 10, 500, fmt_hz),
+    ("Character", "Metal", "comb_mix", "Amount", 0, 1, fmt_pct),
+    ("Character", "Metal", "comb_freq", "Tone", 40, 1200, fmt_hz),
+    ("Character", "Metal", "comb_fb", "Ring", 0, 0.95, fmt_pct),
+    ("Character", "Grit", "drive", "Drive", 0, 1, fmt_pct),
+    ("Character", "Grit", "crush", "Crush", 0, 1, fmt_pct),
+    ("Character", "Grit", "decimate", "Lo-fi", 1, 24, lambda v: f"{v:.0f} x"),
+    ("Character", "Tone", "low_cut", "Low cut", 20, 1500, fmt_hz),
+    ("Character", "Tone", "high_cut", "High cut", 500, 20000, fmt_hz),
+    ("Movement", "Wobble", "vib_depth", "Depth", 0, 1, fmt_pct),
+    ("Movement", "Wobble", "vib_rate", "Speed", 0.5, 12, fmt_hz),
+    ("Movement", "Pitch swing", "pitch_lfo", "Swing", 0, 8, lambda v: f"{v:.1f} st"),
+    ("Movement", "Pitch swing", "pitch_rnd", "Random", 0, 8, lambda v: f"{v:.1f} st"),
+    ("Movement", "Pitch swing", "pitch_lfo_rate", "Speed", 0.1, 10, fmt_hz),
+    ("Movement", "Chorus", "chorus_mix", "Amount", 0, 1, fmt_pct),
+    ("Movement", "Chorus", "chorus_rate", "Speed", 0.1, 5, fmt_hz),
+    ("Movement", "Flanger", "flange_mix", "Amount", 0, 1, fmt_pct),
+    ("Movement", "Flanger", "flange_rate", "Speed", 0.05, 3, fmt_hz),
+    ("Movement", "Tremolo", "trem_depth", "Depth", 0, 1, fmt_pct),
+    ("Movement", "Tremolo", "trem_rate", "Speed", 1, 30, fmt_hz),
+    ("Movement", "Wah", "wah_mix", "Amount", 0, 1, fmt_pct),
+    ("Movement", "Wah", "wah_rate", "Speed", 0.2, 8, fmt_hz),
+    ("Space", "Echo", "echo_mix", "Amount", 0, 1, fmt_pct),
+    ("Space", "Echo", "echo_time", "Time", 0.05, 1.0, lambda v: f"{v * 1000:.0f} ms"),
+    ("Space", "Echo", "echo_fb", "Repeats", 0, 0.9, fmt_pct),
+    ("Space", "Reverb", "reverb_mix", "Amount", 0, 1, fmt_pct),
+    ("Space", "Reverb", "reverb_size", "Size", 0.5, 3.0, lambda v: f"{v:.1f} x"),
+    ("Space", "Connection", "dropout", "Cut-outs", 0, 1, fmt_pct),
 ]
-INT_KEYS = {"pitch"}
+INT_KEYS = {"pitch", "decimate"}
 
 
 # ------------------------------------------------------------------ devices
@@ -94,9 +136,10 @@ class AudioIO:
         self.monitor = None
         self.engine = None
         self.mon_q = queue.Queue(maxsize=16)
-        self.lock = threading.Lock()
         self.rate = None
         self.last_error = None
+        self.ai = None
+        self.ai_enabled = False
 
     @property
     def running(self):
@@ -134,7 +177,6 @@ class AudioIO:
 
         if mon_dev is not None and mon_dev != out_dev:
             mon_ch = min(2, sd.query_devices(mon_dev)["max_output_channels"])
-            self.mon_ch = mon_ch
             with self.mon_q.mutex:
                 self.mon_q.queue.clear()
             try:
@@ -164,7 +206,10 @@ class AudioIO:
             self.engine.set_params(params)
 
     def _callback(self, indata, outdata, frames, time_info, status):
-        y = self.engine.process(indata[:, 0])
+        x = indata[:, 0]
+        if self.ai_enabled and self.ai is not None:
+            x = self.ai.push(x)
+        y = self.engine.process(x)
         outdata[:] = y[:, None]
         if self.monitor is not None:
             try:
@@ -221,7 +266,9 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title(APP_NAME)
-        self.minsize(760, 560)
+        self.minsize(900, 520)
+        sh = self.winfo_screenheight()
+        self.geometry(f"1140x{min(880, sh - 80)}")
         self.audio = AudioIO()
         self.settings = load_settings()
         self.params = Params.from_dict(self.settings.get("params", {}))
@@ -232,9 +279,26 @@ class App(tk.Tk):
         self.updating = False
         self._save_job = None
 
+        ai_cfg = self.settings.get("ai", {})
+        self.ai = ai_voice.AIVoice() if AI_AVAILABLE else None
+        self.audio.ai = self.ai
+        self.catalog = ai_voice.load_catalog() if AI_AVAILABLE else []
+        self.custom_voices = ai_cfg.get("custom", [])
+        self.loaded_voice_id = None
+        self.loading_voice = False
+        self.ai_msgs = queue.Queue()
+        self.ai_on_var = tk.BooleanVar(value=bool(ai_cfg.get("on", False)))
+        self.ai_key_var = tk.DoubleVar(value=float(ai_cfg.get("key", 0)))
+        default_lat = "0.35 s" if (self.ai and self.ai.device.type == "cuda") else "0.5 s"
+        self.ai_latency_var = tk.StringVar(value=ai_cfg.get("latency", default_lat))
+        self.ai_index_var = tk.BooleanVar(value=bool(ai_cfg.get("index", False)))
+        self.ai_voice_var = tk.StringVar()
+        self.ai_status_var = tk.StringVar(value="")
+
         self._style()
         self._build()
         self._load_devices()
+        self._refresh_voice_list(select_id=ai_cfg.get("voice"))
         self._apply_params_to_sliders()
         self._highlight_preset()
         self.protocol("WM_DELETE_WINDOW", self._on_close)
@@ -266,10 +330,28 @@ class App(tk.Tk):
                         font=("Segoe UI", 11, "bold"), padding=(16, 8))
         style.configure("Horizontal.TScale", background="#1b1e24", troughcolor="#2b303a")
         style.configure("TCombobox", arrowcolor="#e8e6e0")
+        style.configure("TCheckbutton", background="#1b1e24", foreground="#e8e6e0")
+        style.configure("Big.TCheckbutton", font=("Segoe UI", 10, "bold"))
 
     def _build(self):
         pad = {"padx": 12, "pady": 6}
-        top = ttk.Frame(self)
+        # everything lives in a scrollable body so small or high-DPI screens still fit
+        canvas = tk.Canvas(self, bg="#1b1e24", highlightthickness=0)
+        bar = ttk.Scrollbar(self, orient="vertical", command=canvas.yview)
+        canvas.configure(yscrollcommand=bar.set)
+        bar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True)
+        self.body = ttk.Frame(canvas)
+        win = canvas.create_window((0, 0), window=self.body, anchor="nw")
+        self.body.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+        canvas.bind("<Configure>", lambda e: canvas.itemconfigure(win, width=e.width))
+
+        def wheel(e):
+            delta = e.delta if sys.platform == "darwin" else e.delta // 120
+            canvas.yview_scroll(-delta, "units")
+        self.bind_all("<MouseWheel>", wheel)
+        self._canvas = canvas
+        top = ttk.Frame(self.body)
         top.pack(fill="x", **pad)
         ttk.Label(top, text=APP_NAME, style="Title.TLabel").pack(side="left")
         self.status_var = tk.StringVar(value="Stopped")
@@ -280,7 +362,7 @@ class App(tk.Tk):
         self.run_btn = ttk.Button(top, text="Start", command=self._toggle_run)
         self.run_btn.pack(side="right", padx=8)
 
-        dev = ttk.LabelFrame(self, text="DEVICES")
+        dev = ttk.LabelFrame(self.body, text="DEVICES")
         dev.pack(fill="x", **pad)
         dev.columnconfigure(1, weight=1)
         dev.columnconfigure(3, weight=1)
@@ -299,10 +381,12 @@ class App(tk.Tk):
         ttk.Button(dev, text="Refresh devices", command=self._load_devices).grid(
             row=1, column=3, sticky="e", padx=8, pady=4)
         self.hint_var = tk.StringVar(value="")
-        ttk.Label(dev, textvariable=self.hint_var, style="Dim.TLabel", wraplength=700,
+        ttk.Label(dev, textvariable=self.hint_var, style="Dim.TLabel", wraplength=760,
                   justify="left").grid(row=2, column=0, columnspan=4, sticky="w", padx=8, pady=(0, 6))
 
-        meters = ttk.Frame(self)
+        self._build_ai_frame(pad)
+
+        meters = ttk.Frame(self.body)
         meters.pack(fill="x", padx=12)
         ttk.Label(meters, text="In", style="Dim.TLabel").grid(row=0, column=0, padx=(0, 6))
         self.in_meter = tk.Canvas(meters, height=10, bg="#262a33", highlightthickness=0)
@@ -312,29 +396,44 @@ class App(tk.Tk):
         self.out_meter.grid(row=1, column=1, sticky="ew", pady=2)
         meters.columnconfigure(1, weight=1)
 
-        pre = ttk.LabelFrame(self, text="VOICES")
+        pre = ttk.LabelFrame(self.body, text=f"VOICES ({len(PRESETS)})")
         pre.pack(fill="x", **pad)
-        cols = 5
-        for i, name in enumerate(PRESETS):
-            b = ttk.Button(pre, text=name, style="Preset.TButton",
-                           command=lambda n=name: self._pick_preset(n))
-            b.grid(row=i // cols, column=i % cols, sticky="ew", padx=4, pady=4)
-            self.preset_buttons[name] = b
-        for c in range(cols):
-            pre.columnconfigure(c, weight=1)
+        tabs = ttk.Notebook(pre)
+        tabs.pack(fill="x", padx=4, pady=4)
+        cols = 6
+        for cat, voices in CATEGORIES.items():
+            page = ttk.Frame(tabs)
+            tabs.add(page, text=f"{cat} ({len(voices)})")
+            for i, name in enumerate(voices):
+                b = ttk.Button(page, text=name, style="Preset.TButton",
+                               command=lambda n=name: self._pick_preset(n))
+                b.grid(row=i // cols, column=i % cols, sticky="ew", padx=3, pady=3)
+                self.preset_buttons[name] = b
+            for c in range(cols):
+                page.columnconfigure(c, weight=1)
 
-        dials = ttk.Frame(self)
-        dials.pack(fill="both", expand=True, **pad)
-        groups = {}
-        for group, key, label, lo, hi, fmt in SLIDERS:
-            if group not in groups:
-                frame = ttk.LabelFrame(dials, text=group.upper())
-                idx = len(groups)
+        dial_box = ttk.LabelFrame(self.body, text="FINE TUNE")
+        dial_box.pack(fill="both", expand=True, **pad)
+        dial_tabs = ttk.Notebook(dial_box)
+        dial_tabs.pack(fill="both", expand=True, padx=4, pady=4)
+        pages, groups = {}, {}
+        for page_name, group, key, label, lo, hi, fmt in SLIDERS:
+            if page_name not in pages:
+                pg = ttk.Frame(dial_tabs)
+                dial_tabs.add(pg, text=page_name)
+                for c in range(4):
+                    pg.columnconfigure(c, weight=1)
+                pages[page_name] = pg
+            pg = pages[page_name]
+            gkey = (page_name, group)
+            if gkey not in groups:
+                idx = len([g for g in groups if g[0] == page_name])
+                frame = ttk.LabelFrame(pg, text=group.upper())
                 frame.grid(row=idx // 4, column=idx % 4, sticky="nsew", padx=4, pady=4)
                 frame.columnconfigure(1, weight=1)
-                groups[group] = frame
-            frame = groups[group]
-            r = len([k for g, k, *_ in SLIDERS if g == group and k in self.vars])
+                groups[gkey] = frame
+            frame = groups[gkey]
+            r = len(frame.grid_slaves()) // 3
             var = tk.DoubleVar(value=getattr(self.params, key))
             self.vars[key] = var
             ttk.Label(frame, text=label).grid(row=r, column=0, sticky="w", padx=6, pady=2)
@@ -344,10 +443,49 @@ class App(tk.Tk):
             vl = ttk.Label(frame, text="", style="Dim.TLabel", width=8, anchor="e")
             vl.grid(row=r, column=2, sticky="e", padx=6)
             self.value_labels[key] = (vl, fmt)
-        for c in range(4):
-            dials.columnconfigure(c, weight=1)
-        ttk.Button(dials, text="Reset dials", command=lambda: self._pick_preset("Normal")).grid(
-            row=2, column=3, sticky="e", padx=4, pady=4)
+        ttk.Button(dial_box, text="Reset dials", command=lambda: self._pick_preset("Normal")).pack(
+            anchor="e", padx=8, pady=(0, 6))
+
+    def _build_ai_frame(self, pad):
+        ai = ttk.LabelFrame(self.body, text="AI VOICE")
+        ai.pack(fill="x", **pad)
+        if not AI_AVAILABLE:
+            ttk.Label(ai, text="AI voices need the full install (torch). Run run_windows.bat again "
+                      "or: pip install -r requirements.txt\n" + AI_IMPORT_ERROR,
+                      style="Dim.TLabel", wraplength=760, justify="left").pack(padx=8, pady=6, anchor="w")
+            return
+        ai.columnconfigure(1, weight=1)
+        ttk.Checkbutton(ai, text="AI voice on", variable=self.ai_on_var, style="Big.TCheckbutton",
+                        command=self._ai_toggled).grid(row=0, column=0, sticky="w", padx=8, pady=4)
+        self.voice_box = ttk.Combobox(ai, textvariable=self.ai_voice_var, state="readonly", height=24)
+        self.voice_box.grid(row=0, column=1, sticky="ew", padx=8, pady=4)
+        self.voice_box.bind("<<ComboboxSelected>>", lambda e: self._schedule_save())
+        self.use_btn = ttk.Button(ai, text="Use voice", command=self._use_voice)
+        self.use_btn.grid(row=0, column=2, padx=4, pady=4)
+        ttk.Button(ai, text="Add .pth file...", command=self._add_pth).grid(row=0, column=3, padx=4, pady=4)
+
+        row1 = ttk.Frame(ai)
+        row1.grid(row=1, column=0, columnspan=4, sticky="ew", padx=4)
+        row1.columnconfigure(2, weight=1)
+        ttk.Label(row1, text="Pitch key").grid(row=0, column=0, padx=4)
+        self.ai_key_label = ttk.Label(row1, text="0 st", style="Dim.TLabel", width=6)
+        self.ai_key_label.grid(row=0, column=1)
+        ttk.Scale(row1, from_=-12, to=12, variable=self.ai_key_var, orient="horizontal",
+                  command=lambda v: self._ai_key_changed()).grid(row=0, column=2, sticky="ew", padx=4)
+        ttk.Label(row1, text="Latency").grid(row=0, column=3, padx=(12, 4))
+        lat = ttk.Combobox(row1, textvariable=self.ai_latency_var, values=LATENCY_CHOICES,
+                           state="readonly", width=7)
+        lat.grid(row=0, column=4, padx=4)
+        lat.bind("<<ComboboxSelected>>", lambda e: self._ai_latency_changed())
+        ttk.Checkbutton(row1, text="Download index (better match, big files)",
+                        variable=self.ai_index_var, command=self._schedule_save).grid(
+            row=0, column=5, padx=(12, 4))
+        self._ai_key_changed()
+        ttk.Label(ai, textvariable=self.ai_status_var, style="Dim.TLabel", wraplength=760,
+                  justify="left").grid(row=2, column=0, columnspan=4, sticky="w", padx=8, pady=(2, 6))
+        dev = self.ai.device.type.upper() if self.ai else "?"
+        self.ai_status_var.set(f"Pick a voice and click Use voice. Runs on {dev}. "
+                               "Male to female: pitch key about +12. Female to male: about -12.")
 
     # ---------- devices
     def _load_devices(self):
@@ -361,7 +499,7 @@ class App(tk.Tk):
         self.out_box["values"] = [l for _, l in self.outputs]
         self.mon_box["values"] = ["(off)"] + [l for _, l in self.outputs]
 
-        def pick(box, var, options, wanted, fallback_idx):
+        def pick(var, options, wanted, fallback_idx):
             labels = [l for _, l in options]
             if wanted in labels:
                 var.set(wanted)
@@ -376,9 +514,9 @@ class App(tk.Tk):
             default_in, default_out = sd.default.device
         except Exception:
             default_in, default_out = None, None
-        pick(self.in_box, self.in_var, self.inputs, self.settings.get("input"), default_in)
+        pick(self.in_var, self.inputs, self.settings.get("input"), default_in)
         virtual = guess_virtual_output(self.outputs)
-        pick(self.out_box, self.out_var, self.outputs, self.settings.get("output"), virtual)
+        pick(self.out_var, self.outputs, self.settings.get("output"), virtual)
         mon_saved = self.settings.get("monitor", "(off)")
         mon_labels = ["(off)"] + [l for _, l in self.outputs]
         self.mon_var.set(mon_saved if mon_saved in mon_labels else "(off)")
@@ -403,6 +541,8 @@ class App(tk.Tk):
     def _toggle_run(self):
         if self.audio.running:
             self.audio.stop()
+            if self.ai:
+                self.ai.stop()
             self.run_btn.configure(text="Start")
             self.status_var.set("Stopped")
             return
@@ -421,6 +561,7 @@ class App(tk.Tk):
         if self.audio.last_error:
             messagebox.showwarning(APP_NAME, self.audio.last_error)
             self.audio.last_error = None
+        self._sync_ai_state()
         self._schedule_save()
 
     def _toggle_enabled(self):
@@ -433,6 +574,157 @@ class App(tk.Tk):
             self.toggle_btn.configure(text="EFFECTS ON", style="On.TButton")
         else:
             self.toggle_btn.configure(text="EFFECTS OFF", style="Off.TButton")
+
+    # ---------- AI voice
+    def _voice_entries(self):
+        entries = []
+        for v in self.catalog:
+            entries.append(dict(v, kind="catalog"))
+        for v in self.custom_voices:
+            entries.append(dict(v, kind="custom", group="My files"))
+        return entries
+
+    def _voice_label(self, v):
+        mark = ""
+        if v["kind"] == "custom" or ai_voice.is_downloaded(v):
+            mark = "  ✓"
+        note = f"  ({v['note']})" if v.get("note") else ""
+        return f"{v['group']} · {v['name']}{note}{mark}"
+
+    def _refresh_voice_list(self, select_id=None):
+        if not AI_AVAILABLE:
+            return
+        self.voice_entries = self._voice_entries()
+        labels = [self._voice_label(v) for v in self.voice_entries]
+        self.voice_box["values"] = labels
+        current = select_id or self._selected_voice_id()
+        for v, l in zip(self.voice_entries, labels):
+            if v["id"] == current:
+                self.ai_voice_var.set(l)
+                return
+        if labels:
+            self.ai_voice_var.set(labels[0])
+
+    def _selected_voice(self):
+        label = self.ai_voice_var.get()
+        for v in getattr(self, "voice_entries", []):
+            if self._voice_label(v) == label:
+                return v
+        return None
+
+    def _selected_voice_id(self):
+        v = self._selected_voice()
+        return v["id"] if v else None
+
+    def _ai_block_time(self):
+        try:
+            return float(self.ai_latency_var.get().split()[0])
+        except Exception:
+            return 0.35
+
+    def _use_voice(self, then=None):
+        v = self._selected_voice()
+        if v is None or self.loading_voice:
+            return
+        self.loading_voice = True
+        self.use_btn.configure(state="disabled")
+        want_index = self.ai_index_var.get()
+        post = self.ai_msgs.put
+
+        def work():
+            try:
+                if v["kind"] == "custom":
+                    pth, idx = v["pth"], v.get("index")
+                else:
+                    folder = ai_voice.voice_dir(v["id"])
+                    pth, idx = ai_voice.find_model_files(folder)
+                    if pth is None:
+                        pth, idx = ai_voice.download_voice(v, post)
+                    if want_index and idx is None and v.get("index"):
+                        from huggingface_hub import hf_hub_download
+                        post("Downloading index (this can be several hundred MB)...")
+                        idx = hf_hub_download(v["repo"], v["index"], local_dir=folder)
+                self.ai.load_voice(pth, idx if want_index else None, 0.5 if want_index else 0.0, post)
+                post(("loaded", v["id"], v["name"]))
+            except Exception as e:
+                post(("error", str(e)))
+
+        self._after_load = then
+        threading.Thread(target=work, daemon=True).start()
+
+    def _add_pth(self):
+        path = filedialog.askopenfilename(title="Pick an RVC model (.pth)",
+                                          filetypes=[("RVC model", "*.pth"), ("All files", "*.*")])
+        if not path:
+            return
+        folder = os.path.dirname(path)
+        idx = None
+        for fn in os.listdir(folder):
+            if fn.lower().endswith(".index"):
+                idx = os.path.join(folder, fn)
+                break
+        name = os.path.splitext(os.path.basename(path))[0]
+        vid = "custom_" + name.lower().replace(" ", "_")
+        self.custom_voices = [c for c in self.custom_voices if c["id"] != vid]
+        self.custom_voices.append({"id": vid, "name": name, "pth": path, "index": idx})
+        self._refresh_voice_list(select_id=vid)
+        self._schedule_save()
+
+    def _ai_toggled(self):
+        self._sync_ai_state()
+        self._schedule_save()
+
+    def _sync_ai_state(self):
+        """Make the running stream match the AI checkbox."""
+        if not AI_AVAILABLE:
+            return
+        want = self.ai_on_var.get()
+        self.audio.ai_enabled = want
+        if not self.audio.running:
+            return
+        if want:
+            if self.ai.model is None:
+                if self.loaded_voice_id is None and not self.loading_voice:
+                    self._use_voice()
+                return
+            self.ai.set_pitch_key(self.ai_key_var.get())
+            self.ai.start(self.audio.rate, self._ai_block_time())
+        else:
+            self.ai.stop()
+
+    def _ai_key_changed(self):
+        k = round(self.ai_key_var.get())
+        self.ai_key_var.set(k)
+        self.ai_key_label.configure(text=f"{k:+d} st")
+        if self.ai:
+            self.ai.set_pitch_key(k)
+        self._schedule_save()
+
+    def _ai_latency_changed(self):
+        if self.ai and self.ai.running:
+            self.ai.start(self.audio.rate, self._ai_block_time())
+        self._schedule_save()
+
+    def _drain_ai_msgs(self):
+        while True:
+            try:
+                m = self.ai_msgs.get_nowait()
+            except queue.Empty:
+                return
+            if isinstance(m, str):
+                self.ai_status_var.set(m)
+            elif m[0] == "loaded":
+                self.loading_voice = False
+                self.use_btn.configure(state="normal")
+                self.loaded_voice_id = m[1]
+                self.ai_status_var.set(f"AI voice ready: {m[2]}")
+                self._refresh_voice_list(select_id=m[1])
+                self._sync_ai_state()
+                self._schedule_save()
+            elif m[0] == "error":
+                self.loading_voice = False
+                self.use_btn.configure(state="normal")
+                self.ai_status_var.set("Could not load voice: " + m[1])
 
     # ---------- params
     def _pick_preset(self, name):
@@ -493,6 +785,14 @@ class App(tk.Tk):
             "input": self.in_var.get(),
             "output": self.out_var.get(),
             "monitor": self.mon_var.get(),
+            "ai": {
+                "on": self.ai_on_var.get(),
+                "voice": self._selected_voice_id(),
+                "key": round(self.ai_key_var.get()),
+                "latency": self.ai_latency_var.get(),
+                "index": self.ai_index_var.get(),
+                "custom": self.custom_voices,
+            },
         })
 
     # ---------- periodic
@@ -502,8 +802,14 @@ class App(tk.Tk):
         self._draw_meter(self.out_meter, lout)
         if self.audio.running:
             lat = BLOCK / self.audio.rate * 1000
-            self.status_var.set(
-                f"Running  {self.audio.rate} Hz  block {lat:.1f} ms  cpu {self.audio.cpu_load() * 100:.0f} %")
+            s = f"Running  {self.audio.rate} Hz  block {lat:.1f} ms  cpu {self.audio.cpu_load() * 100:.0f} %"
+            if self.ai and self.ai.running:
+                s += f"   AI {self.ai.proc_ms:.0f} ms per {self._ai_block_time() * 1000:.0f} ms block"
+                if self.ai.underruns > 5:
+                    s += f"  (gaps {self.ai.underruns}: raise Latency)"
+            self.status_var.set(s)
+        if AI_AVAILABLE:
+            self._drain_ai_msgs()
         self.after(60, self._tick)
 
     def _draw_meter(self, canvas, level):
@@ -517,6 +823,8 @@ class App(tk.Tk):
 
     def _on_close(self):
         self.audio.stop()
+        if self.ai:
+            self.ai.stop()
         self._save()
         self.destroy()
 

@@ -1,0 +1,1069 @@
+[
+ {
+  "id": "trump",
+  "name": "Donald Trump",
+  "group": "Celebrities",
+  "repo": "binant/Donald_Trump__RVC_v2_",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "obama",
+  "name": "Barack Obama",
+  "group": "Celebrities",
+  "repo": "0x3e9/Obama_RVC",
+  "files": [
+   "obama.zip"
+  ],
+  "index": null,
+  "note": "male"
+ },
+ {
+  "id": "biden",
+  "name": "Joe Biden",
+  "group": "Celebrities",
+  "repo": "0x3e9/Biden_RVC",
+  "files": [
+   "biden.zip"
+  ],
+  "index": null,
+  "note": "male"
+ },
+ {
+  "id": "morgan_freeman",
+  "name": "Morgan Freeman",
+  "group": "Celebrities",
+  "repo": "binant/morgan_freeman-male",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male, deep"
+ },
+ {
+  "id": "stan_lee",
+  "name": "Stan Lee",
+  "group": "Celebrities",
+  "repo": "binant/stan_lee",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "gordon_ramsay",
+  "name": "Gordon Ramsay",
+  "group": "Celebrities",
+  "repo": "rayzox57/GordonRamsay_RVC",
+  "files": [
+   "GordonRamsay_v2_ov2_250e.zip"
+  ],
+  "index": null,
+  "note": "male"
+ },
+ {
+  "id": "pewdiepie",
+  "name": "PewDiePie",
+  "group": "Celebrities",
+  "repo": "rayzox57/PewDiePie_RVC",
+  "files": [
+   "PewDiePie_v2_rin_e3_650e.zip"
+  ],
+  "index": null,
+  "note": "male"
+ },
+ {
+  "id": "michael_jackson",
+  "name": "Michael Jackson",
+  "group": "Singers",
+  "repo": "binant/michael_jackson_history_botdf",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male, high"
+ },
+ {
+  "id": "freddie_mercury",
+  "name": "Freddie Mercury",
+  "group": "Singers",
+  "repo": "binant/Freddie_Mercury__RVC_-_700_Epochs_",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "weeknd",
+  "name": "The Weeknd",
+  "group": "Singers",
+  "repo": "binant/The_Weeknd__RVC__1000_Epochs",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male, high"
+ },
+ {
+  "id": "drake",
+  "name": "Drake",
+  "group": "Singers",
+  "repo": "binant/Drake_RVC",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "eminem",
+  "name": "Eminem",
+  "group": "Singers",
+  "repo": "GoDZ21/Eminem_MTBMBEra_RVCv2",
+  "files": [
+   "trained_Eminem_MTBMBEra_RVCv2.zip"
+  ],
+  "index": null,
+  "note": "male"
+ },
+ {
+  "id": "kanye",
+  "name": "Kanye West",
+  "group": "Singers",
+  "repo": "GoDZ21/KanyeWest_TheCollegeDropout_Era_RVCv2",
+  "files": [
+   "trained_KanyeWest_TheCollegeDropout_Era_RVCv2.zip"
+  ],
+  "index": null,
+  "note": "male"
+ },
+ {
+  "id": "taylor_swift",
+  "name": "Taylor Swift",
+  "group": "Singers",
+  "repo": "binant/Taylor_Swift__RVC_v1_",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "female, RVC v1"
+ },
+ {
+  "id": "ariana_grande",
+  "name": "Ariana Grande",
+  "group": "Singers",
+  "repo": "binant/Ariana_Grande__RVC_v1_",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "female, RVC v1"
+ },
+ {
+  "id": "mariah_carey",
+  "name": "Mariah Carey",
+  "group": "Singers",
+  "repo": "binant/mariah_carey_2025",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "female"
+ },
+ {
+  "id": "sabrina_carpenter",
+  "name": "Sabrina Carpenter",
+  "group": "Singers",
+  "repo": "binant/sabrina_carpenter",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "female"
+ },
+ {
+  "id": "paul_mccartney",
+  "name": "Paul McCartney (60s)",
+  "group": "Singers",
+  "repo": "binant/paul_mccartney_63_70",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "john_lennon",
+  "name": "John Lennon (60s)",
+  "group": "Singers",
+  "repo": "binant/john_lennon_60s",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "jhope",
+  "name": "J-Hope (BTS)",
+  "group": "Singers",
+  "repo": "binant/jhope_bts",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "benson_boone",
+  "name": "Benson Boone",
+  "group": "Singers",
+  "repo": "binant/benson_boone",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "playboi_carti",
+  "name": "Playboi Carti (deep)",
+  "group": "Singers",
+  "repo": "binant/playboi_carti_deep",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "zack_de_la_rocha",
+  "name": "Zack de la Rocha",
+  "group": "Singers",
+  "repo": "binant/zack_de_la_rocha_1992",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "darth_vader",
+  "name": "Darth Vader",
+  "group": "Movies",
+  "repo": "binant/darth_vader-male",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male, deep"
+ },
+ {
+  "id": "yoda",
+  "name": "Yoda",
+  "group": "Movies",
+  "repo": "binant/grand_master_yoda",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "chewbacca",
+  "name": "Chewbacca",
+  "group": "Movies",
+  "repo": "binant/chewbacca_sw",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "growl"
+ },
+ {
+  "id": "clone_trooper",
+  "name": "Clone Trooper",
+  "group": "Movies",
+  "repo": "binant/clone_trooper_sw",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "jango_fett",
+  "name": "Jango Fett",
+  "group": "Movies",
+  "repo": "binant/jango_fett_sw",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "boba_fett",
+  "name": "Boba Fett",
+  "group": "Movies",
+  "repo": "binant/boba_fett_sw",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "general_grievous",
+  "name": "General Grievous",
+  "group": "Movies",
+  "repo": "binant/general_grievous",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male, raspy"
+ },
+ {
+  "id": "battle_droid",
+  "name": "B1 Battle Droid",
+  "group": "Movies",
+  "repo": "binant/b1_battle_droid_sw",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "robot"
+ },
+ {
+  "id": "optimus_prime",
+  "name": "Optimus Prime",
+  "group": "Movies",
+  "repo": "binant/optimus_prime-male",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male, deep"
+ },
+ {
+  "id": "joker",
+  "name": "Joker (Arkham)",
+  "group": "Games",
+  "repo": "binant/joker_arkham",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "alfred",
+  "name": "Alfred Pennyworth (Arkham)",
+  "group": "Games",
+  "repo": "binant/alfred_pennyworth_arkham",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male, British"
+ },
+ {
+  "id": "hulk",
+  "name": "Incredible Hulk",
+  "group": "Movies",
+  "repo": "binant/incredible_hulk",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male, deep"
+ },
+ {
+  "id": "ghostface",
+  "name": "Ghostface (Scream)",
+  "group": "Movies",
+  "repo": "binant/ghostface",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "frontman",
+  "name": "Front Man (Squid Game)",
+  "group": "Movies",
+  "repo": "binant/frontman_squid_game",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "squid_guard",
+  "name": "Guard (Squid Game)",
+  "group": "Movies",
+  "repo": "binant/squid_game_guard",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "genie",
+  "name": "Genie (Aladdin)",
+  "group": "Movies",
+  "repo": "binant/genie_jm",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "odin",
+  "name": "Odin (God of War)",
+  "group": "Games",
+  "repo": "binant/odin_gow",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "kratos",
+  "name": "Kratos (God of War)",
+  "group": "Games",
+  "repo": "Markos7894/Kratos_RVC2_TCCarson",
+  "files": [
+   "Kratos.zip"
+  ],
+  "index": null,
+  "note": "male, deep"
+ },
+ {
+  "id": "claptrap",
+  "name": "Claptrap (Borderlands)",
+  "group": "Games",
+  "repo": "binant/claptrap_robot",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "robot"
+ },
+ {
+  "id": "hl1_scientist",
+  "name": "Scientist (Half-Life)",
+  "group": "Games",
+  "repo": "binant/scientist_hl1",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "jinx",
+  "name": "Jinx (League of Legends)",
+  "group": "Games",
+  "repo": "binant/jinx_lol",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "female"
+ },
+ {
+  "id": "ashe",
+  "name": "Ashe (Overwatch)",
+  "group": "Games",
+  "repo": "binant/ashe_overwatch",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "female"
+ },
+ {
+  "id": "sellen",
+  "name": "Sorceress Sellen (Elden Ring)",
+  "group": "Games",
+  "repo": "binant/sorceress_sellen",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "female"
+ },
+ {
+  "id": "ranni",
+  "name": "Ranni (Elden Ring)",
+  "group": "Games",
+  "repo": "binant/ranni_elden_ring_v2",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "female"
+ },
+ {
+  "id": "blaidd",
+  "name": "Blaidd (Elden Ring)",
+  "group": "Games",
+  "repo": "binant/blaidd_elden_ring",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "scp682",
+  "name": "SCP-682",
+  "group": "Games",
+  "repo": "binant/scp_682",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "monster"
+ },
+ {
+  "id": "springtrap",
+  "name": "Springtrap (FNAF)",
+  "group": "Games",
+  "repo": "binant/spring_trap_fnaf",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "circus_baby",
+  "name": "Circus Baby (FNAF)",
+  "group": "Games",
+  "repo": "binant/circus_baby_fnaf",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "female"
+ },
+ {
+  "id": "phone_guy",
+  "name": "Phone Guy (FNAF)",
+  "group": "Games",
+  "repo": "binant/phone_guy_fnaf1",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "neco_arc",
+  "name": "Neco-Arc",
+  "group": "Games",
+  "repo": "binant/neco_arc",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "high"
+ },
+ {
+  "id": "sonic",
+  "name": "Sonic (Jaleel White)",
+  "group": "Games",
+  "repo": "Bluebomber182/Sonic-the-Hedgehog-Jaleel-White-RVC-Model",
+  "files": [
+   "Sonic-48000_e600_s9600.pth"
+  ],
+  "index": null,
+  "note": "male"
+ },
+ {
+  "id": "mario",
+  "name": "Mario",
+  "group": "Games",
+  "repo": "Coolwowsocoolwow/Mario_RVC",
+  "files": [
+   "Mario_v2.zip"
+  ],
+  "index": null,
+  "note": "male"
+ },
+ {
+  "id": "spongebob",
+  "name": "SpongeBob",
+  "group": "Cartoons",
+  "repo": "binant/SpongeBob_SquarePants__RVC_v2_",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "high"
+ },
+ {
+  "id": "patrick",
+  "name": "Patrick Star",
+  "group": "Cartoons",
+  "repo": "binant/Patrick_Star__RVC_v2_",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "plankton",
+  "name": "Plankton",
+  "group": "Cartoons",
+  "repo": "binant/plankton_spongebob",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "small"
+ },
+ {
+  "id": "squidward",
+  "name": "Squidward",
+  "group": "Cartoons",
+  "repo": "lepifort/squidwardRVC",
+  "files": [
+   "squidward_e1250_s16250.pth"
+  ],
+  "index": null,
+  "note": "male"
+ },
+ {
+  "id": "peter_griffin",
+  "name": "Peter Griffin",
+  "group": "Cartoons",
+  "repo": "binant/Peter_Griffin__Family_Guy___RVC_V2__300_Epoch",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "donald_duck",
+  "name": "Donald Duck",
+  "group": "Cartoons",
+  "repo": "binant/Donald_Duck__RVC_v2__600_Epochs",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "quacky"
+ },
+ {
+  "id": "bender",
+  "name": "Bender (Futurama)",
+  "group": "Cartoons",
+  "repo": "BlitzKrieg/Bender_RVC2",
+  "files": [
+   "Futurama_Bender_V1.zip"
+  ],
+  "index": null,
+  "note": "robot"
+ },
+ {
+  "id": "pomni",
+  "name": "Pomni (Digital Circus)",
+  "group": "Cartoons",
+  "repo": "binant/pomni",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "female"
+ },
+ {
+  "id": "kinger",
+  "name": "Kinger (Digital Circus)",
+  "group": "Cartoons",
+  "repo": "binant/kinger",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "rainbow_dash",
+  "name": "Rainbow Dash",
+  "group": "Cartoons",
+  "repo": "binant/rainbow_dash_g3",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "female"
+ },
+ {
+  "id": "goku",
+  "name": "Goku",
+  "group": "Anime",
+  "repo": "mthxz/GokuRVCv2_400epoches",
+  "files": [
+   "GokuRVC400epoches.zip"
+  ],
+  "index": null,
+  "note": "male"
+ },
+ {
+  "id": "vegeta",
+  "name": "Vegeta",
+  "group": "Anime",
+  "repo": "binant/DBZ_Vegeta_-_RVC",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "eren",
+  "name": "Eren Yeager",
+  "group": "Anime",
+  "repo": "binant/eren_yeager_male",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "levi",
+  "name": "Levi Ackerman",
+  "group": "Anime",
+  "repo": "binant/levi_male",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "mikasa",
+  "name": "Mikasa",
+  "group": "Anime",
+  "repo": "binant/mikasa_female",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "female"
+ },
+ {
+  "id": "madara",
+  "name": "Madara",
+  "group": "Anime",
+  "repo": "binant/madara_male",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "sasuke",
+  "name": "Sasuke",
+  "group": "Anime",
+  "repo": "binant/sasuke_male",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "itachi",
+  "name": "Itachi",
+  "group": "Anime",
+  "repo": "binant/itachi_male",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "jiraiya",
+  "name": "Jiraiya",
+  "group": "Anime",
+  "repo": "binant/jiraya_male",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "light",
+  "name": "Light Yagami",
+  "group": "Anime",
+  "repo": "binant/yagami_light-male",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "l_lawliet",
+  "name": "L Lawliet",
+  "group": "Anime",
+  "repo": "binant/L_lawliet-male",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "miku",
+  "name": "Hatsune Miku",
+  "group": "Anime",
+  "repo": "binant/Hatsune_Miku__RVC_v2_",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "female, high"
+ },
+ {
+  "id": "amelia_watson",
+  "name": "Amelia Watson (VTuber)",
+  "group": "Anime",
+  "repo": "dacoolkid44/VTuber-RVC",
+  "files": [
+   "Amelia Watson/Amelia.pth"
+  ],
+  "index": "Amelia Watson/added_IVF4964_Flat_nprobe_1_Amelia_v2.index",
+  "note": "female"
+ },
+ {
+  "id": "amane_kanata",
+  "name": "Amane Kanata (VTuber)",
+  "group": "Anime",
+  "repo": "dacoolkid44/VTuber-RVC",
+  "files": [
+   "Amane Kanata/kanata.pth"
+  ],
+  "index": "Amane Kanata/added_IVF2220_Flat_nprobe_1_kanata_v2.index",
+  "note": "female"
+ },
+ {
+  "id": "calm_man",
+  "name": "Calm man",
+  "group": "Everyday",
+  "repo": "binant/calm_man-male",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "egirl",
+  "name": "E-girl",
+  "group": "Everyday",
+  "repo": "binant/egirl_female",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "female"
+ },
+ {
+  "id": "goth",
+  "name": "Goth girl",
+  "group": "Everyday",
+  "repo": "binant/goth_mommy-female",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "female"
+ },
+ {
+  "id": "latina",
+  "name": "Latina girl",
+  "group": "Everyday",
+  "repo": "binant/latina_girl-female",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "female"
+ },
+ {
+  "id": "asmr",
+  "name": "Soft ASMR girl",
+  "group": "Everyday",
+  "repo": "binant/soft_asmr_female",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "female, whisper"
+ },
+ {
+  "id": "little_girl",
+  "name": "Little girl",
+  "group": "Everyday",
+  "repo": "binant/Little_girl_female",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "child"
+ },
+ {
+  "id": "baby_girl",
+  "name": "Baby girl",
+  "group": "Everyday",
+  "repo": "binant/Baby_girl_female",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "child"
+ },
+ {
+  "id": "indian_tutor",
+  "name": "Indian tutorial guy",
+  "group": "Everyday",
+  "repo": "binant/indian_tuto-male",
+  "files": [
+   "model.pth"
+  ],
+  "index": "model.index",
+  "note": "male"
+ },
+ {
+  "id": "vctk_p226",
+  "name": "Studio p226",
+  "group": "Studio speakers",
+  "repo": "Nekochu/RVC-VCTK_Voice-sample",
+  "files": [
+   "M/p226/Mp226.pth"
+  ],
+  "index": "M/p226/added_IVF1161_Flat_nprobe_1_Mp226_v2.index",
+  "note": "Male, 22, English (Surrey)"
+ },
+ {
+  "id": "vctk_p274",
+  "name": "Studio p274",
+  "group": "Studio speakers",
+  "repo": "Nekochu/RVC-VCTK_Voice-sample",
+  "files": [
+   "M/p274/Mp274.pth"
+  ],
+  "index": "M/p274/added_IVF1558_Flat_nprobe_1_Mp274_v2.index",
+  "note": "Male, 22, English (Essex)"
+ },
+ {
+  "id": "vctk_p311",
+  "name": "Studio p311",
+  "group": "Studio speakers",
+  "repo": "Nekochu/RVC-VCTK_Voice-sample",
+  "files": [
+   "M/p311/Mp311.pth"
+  ],
+  "index": null,
+  "note": "Male, American"
+ },
+ {
+  "id": "vctk_p231",
+  "name": "Studio p231",
+  "group": "Studio speakers",
+  "repo": "Nekochu/RVC-VCTK_Voice-sample",
+  "files": [
+   "F/p231/Fp231.pth"
+  ],
+  "index": "F/p231/added_IVF1216_Flat_nprobe_1_Fp231_v2.index",
+  "note": "Female, 23, English (Southern England)"
+ },
+ {
+  "id": "vctk_p238",
+  "name": "Studio p238",
+  "group": "Studio speakers",
+  "repo": "Nekochu/RVC-VCTK_Voice-sample",
+  "files": [
+   "F/p238/Fp238.pth"
+  ],
+  "index": null,
+  "note": "Female, Northern Irish"
+ },
+ {
+  "id": "vctk_p249",
+  "name": "Studio p249",
+  "group": "Studio speakers",
+  "repo": "Nekochu/RVC-VCTK_Voice-sample",
+  "files": [
+   "F/p249/Fp249.pth"
+  ],
+  "index": null,
+  "note": "Female, Scottish"
+ },
+ {
+  "id": "vctk_p262",
+  "name": "Studio p262",
+  "group": "Studio speakers",
+  "repo": "Nekochu/RVC-VCTK_Voice-sample",
+  "files": [
+   "F/p262/Fp262.pth"
+  ],
+  "index": null,
+  "note": "Female, Scottish (Edinburgh)"
+ },
+ {
+  "id": "vctk_p280",
+  "name": "Studio p280",
+  "group": "Studio speakers",
+  "repo": "Nekochu/RVC-VCTK_Voice-sample",
+  "files": [
+   "F/p280/Fp280.pth"
+  ],
+  "index": null,
+  "note": "Female"
+ },
+ {
+  "id": "vctk_p323",
+  "name": "Studio p323",
+  "group": "Studio speakers",
+  "repo": "Nekochu/RVC-VCTK_Voice-sample",
+  "files": [
+   "F/p323/Fp323.pth"
+  ],
+  "index": null,
+  "note": "Female, South African"
+ },
+ {
+  "id": "vctk_p340",
+  "name": "Studio p340",
+  "group": "Studio speakers",
+  "repo": "Nekochu/RVC-VCTK_Voice-sample",
+  "files": [
+   "F/p340/Fp340.pth"
+  ],
+  "index": null,
+  "note": "Female, Irish"
+ }
+]
